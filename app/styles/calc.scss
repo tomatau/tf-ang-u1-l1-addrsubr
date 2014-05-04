@@ -1,0 +1,32 @@
+// start of custom files
+.jumbotron {
+    form {
+        fieldset.form-group {
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        button {
+            padding: 0;
+
+            span {
+                display: block;
+                height: 25px;
+                width: 25px;
+                line-height: 1.9;
+            }
+        }
+
+        .error {
+            color: #C31207;
+        }
+    }
+}
+
+#result-container {
+    -ms-text-align: center;
+    text-align: center;
+    font: {
+        size: 2rem;
+    }
+}
