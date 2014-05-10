@@ -194,7 +194,7 @@ module.exports = function (grunt) {
         bowerInstall: {
             app: {
                 src: ['<%= config.app %>/index.html'],
-                exclude: ['bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap.js']
+                exclude: ['bower_components/bootstrap-sass-official/vendor/assets/javascripts/*']
             },
             sass: {
                 src: ['<%= config.app %>/styles/{,*/}*.{scss,sass}']

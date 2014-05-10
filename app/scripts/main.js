@@ -1,14 +1,18 @@
 
 ;(function IIFE($, window){
-    var calculator, view, $form;
+    'use strict';
+    var Calculator, view;
 
     view = {
         $el: $('<p>', {
             class: 'result'
         }),
         $container: $('#result-container'),
-        show: function(toShow){
+        showMessage: function(toShow){
             var message = "X " + toShow.type + " Y is " + toShow.result;
+            this.show(message);
+        },
+        show: function(message){
             this.$container.html(this.$el.html(message));
         },
         clear: function(){
@@ -16,7 +20,27 @@
         }
     };
 
-    calculator = {
+    /**
+     *
+     * @type {{
+     * removeErrs: removeErrs,
+     * _getFormValues: _getFormValues,
+     * _getCalulationType: _getCalulationType,
+     * _makeCalculation: _makeCalculation,
+     * _addValues: _addValues,
+     * _minusValues: _minusValues,
+     * _displayResult: _displayResult,
+     * run: run
+     * }}
+     */
+    Calculator = function(options){
+        this.$form = options.$form;
+        this.xSelector = options.xSelector;
+        this.ySelector = options.ySelector;
+        this.typeProperty = options.typeProperty;
+    }
+
+    Calculator.prototype = {
         removeErrs: function(){
             this.$form.find('.error').remove();
         },
@@ -26,8 +50,8 @@
          * @returns {{x: Number, y: Number}}
          */
         _getFormValues: function(){
-            var x = Number(this.$form.find('#x').val()),
-                y = Number(this.$form.find('#y').val());
+            var x = Number(this.$form.find(this.xSelector).val()),
+                y = Number(this.$form.find(this.ySelector).val());
 
             [x, y].forEach(function(val){
                 if (isNaN(val)) { throw Error('You must supply valid numbers'); }
@@ -35,7 +59,9 @@
             return { x: x, y: y }
         },
         // should use data attribute?
-        _getCalulationType: function (target) { return target.id; },
+        _getCalulationType: function (target) {
+            return target[this.typeProperty];
+        },
         _makeCalculation: function(calculationType, data){
             switch(calculationType){
                 case 'plus':
@@ -54,7 +80,7 @@
             return data.x - data.y;
         },
         _displayResult: function (calculationType) {
-            view.show({
+            view.showMessage({
                 type: calculationType,
                 result: this.result
             });
@@ -69,36 +95,36 @@
 
 
     $(function(){
-        $form = calculator.$form = $('#calc');
-
-//        calculator.setup({
-//            xSelector: 'x',
-//            ySelector: 'y',
-//            typeProperty: 'id'
-//        });
+        var $form = $('#calc'),
+            calc = new Calculator({
+                $form: $form,
+                xSelector: '#x',
+                ySelector: '#y',
+                typeProperty: 'id'
+            });
 
         $form.on('submit', function(e){
             e.preventDefault();
         });
 
-        $form.find('button').on(
-            'click', function(e){
-                e.preventDefault();
-                if( e.target.nodeName == 'SPAN' ) {
-                    try {
-                        calculator.removeErrs();
-                        view.clear.call(view);
-                        calculator.run.call(calculator, e);
-                    } catch (e) {
-                        var $error = $('<span>',{
-                            class: 'error',
-                            text: e.message
-                        });
-                        $form.append($error);
-                    }
+        $form.find('button').on( 'click', function(e){
+            e.preventDefault();
+            // the icons for + and - are inside spans that take up
+            // THE WHOLE BUTTON
+            if( e.target.nodeName == 'SPAN' ) {
+                try {
+                    calc.removeErrs();
+                    view.clear(view);
+                    calc.run(e);
+                } catch (e) {
+                    var $error = $('<span>',{
+                        class: 'error',
+                        text: e.message
+                    });
+                    $form.append($error);
                 }
             }
-        );
+        });
     });
 
 
