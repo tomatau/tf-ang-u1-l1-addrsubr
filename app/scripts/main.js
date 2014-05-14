@@ -24,12 +24,6 @@
      *
      * @type {{
      * removeErrs: removeErrs,
-     * _getFormValues: _getFormValues,
-     * _getCalulationType: _getCalulationType,
-     * _makeCalculation: _makeCalculation,
-     * _addValues: _addValues,
-     * _minusValues: _minusValues,
-     * _displayResult: _displayResult,
      * run: run
      * }}
      */
@@ -74,10 +68,12 @@
             }
         },
         _addValues: function(data){
-            return data.x + data.y;
+            var x = new Big(data.x) 
+            return x.plus(data.y).toString();
         },
         _minusValues: function(data){
-            return data.x - data.y;
+            var x = new Big(data.x) 
+            return x.minus(data.y).toString();
         },
         _displayResult: function (calculationType) {
             view.showMessage({
