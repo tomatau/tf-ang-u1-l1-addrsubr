@@ -1,5 +1,4 @@
-
-;(function IIFE($, window){
+;(function IIFE($){ // jshint ignore:line
     'use strict';
     var Calculator, view;
 
@@ -7,9 +6,9 @@
         $el: $('<p>', {
             class: 'result'
         }),
-        $container: $('#result-container'),
+        $container: null,
         showMessage: function(toShow){
-            var message = "X " + toShow.type + " Y is " + toShow.result;
+            var message = 'X ' + toShow.type + ' Y is ' + toShow.result;
             this.show(message);
         },
         show: function(message){
@@ -32,7 +31,7 @@
         this.xSelector = options.xSelector;
         this.ySelector = options.ySelector;
         this.typeProperty = options.typeProperty;
-    }
+    };
 
     Calculator.prototype = {
         removeErrs: function(){
@@ -48,9 +47,9 @@
                 y = Number(this.$form.find(this.ySelector).val());
 
             [x, y].forEach(function(val){
-                if (isNaN(val)) { throw Error('You must supply valid numbers'); }
+                if (isNaN(val)) { throw new Error('You must supply valid numbers'); }
             });
-            return { x: x, y: y }
+            return { x: x, y: y };
         },
         // should use data attribute?
         _getCalulationType: function (target) {
@@ -64,15 +63,16 @@
                 case 'minus':
                     this.result = this._minusValues(data);
                     break;
-                default: break;
+                default:
+                    break;
             }
         },
         _addValues: function(data){
-            var x = new Big(data.x) 
+            var x = new Big(data.x);
             return x.plus(data.y).toString();
         },
         _minusValues: function(data){
-            var x = new Big(data.x) 
+            var x = new Big(data.x);
             return x.minus(data.y).toString();
         },
         _displayResult: function (calculationType) {
@@ -99,6 +99,8 @@
                 typeProperty: 'id'
             });
 
+        view.$container = $('#result-container');
+
         $form.on('submit', function(e){
             e.preventDefault();
         });
@@ -107,10 +109,10 @@
             e.preventDefault();
             // the icons for + and - are inside spans that take up
             // THE WHOLE BUTTON
-            if( e.target.nodeName == 'SPAN' ) {
+            if( e.target.nodeName == 'SPAN' ) { // jshint ignore:line
                 try {
                     calc.removeErrs();
-                    view.clear(view);
+                    view.clear();
                     calc.run(e);
                 } catch (e) {
                     var $error = $('<span>',{
@@ -124,4 +126,4 @@
     });
 
 
-}(jQuery, window));
+}(jQuery));
